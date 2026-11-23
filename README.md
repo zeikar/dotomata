@@ -2,7 +2,9 @@
 
 **dotomata** — *dot + automata.* An agent pipeline that takes a character from concept art to a validated, game-ready animated pixel sprite sheet.
 
-<!-- demo GIF: added with the example units -->
+![Four animated sprites made with dotomata: two adventurers, a lynx and a tortoise, each idling and then attacking](docs/images/demo.gif)
+
+![Card art on the left of each pair, the pixel sprite drawn from it on the right](docs/images/art-to-sprite.png)
 
 ## What makes it different
 
@@ -103,4 +105,4 @@ The sheet and the motion JSON are all an engine needs; nothing is tied to a part
 
 ## License
 
-[MIT](LICENSE)
+The code and docs are [MIT](LICENSE). The example art in `docs/images/` shows characters from the author's own game in development and is not covered by the MIT license.
