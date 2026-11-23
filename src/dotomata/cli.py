@@ -23,7 +23,7 @@ from . import generate as gen_mod
 from . import refadopt
 from .assemble import assemble_unit
 from .common import (CONFIG_NAME, Context, SpriteError, grid_bytes, json_bytes, list_units, load_context, load_unit,
-                     opaque, parse_hex, read_json, render_rgba, sha256_file, to_hex, write_new)
+                     opaque, parse_hex, read_json, render_rgba, sha256_file, to_hex, unit_paths_by_id, write_new)
 from .convert import convert_image
 from .fixes import append_edits, edits_from_png
 from .imaging import flatten, load_rgba, png_bytes, zoom
@@ -515,6 +515,9 @@ def main(argv=None) -> int:
             return cmd_selftest(args)
         root = args.root.resolve()
         ctx = load_context(root, args.config.resolve() if args.config is not None else None)
+        if args.command in ("generate", "build", "palette-swap", "art"):
+            # These write files named by unit id; two units sharing an id would overwrite each other.
+            unit_paths_by_id(ctx)
         handlers = {
             "generate": cmd_generate, "convert": cmd_convert, "fix": cmd_fix, "parts": cmd_parts,
             "assemble": cmd_assemble, "verify": cmd_verify, "checkpoint": cmd_checkpoint,

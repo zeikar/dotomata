@@ -463,6 +463,8 @@ def test_nested_units(tmp: Path, real: dict) -> None:
     shutil.copytree(source / "people" / "T003", source / "copy" / "T003")
     r = run_cli(root, "verify")
     expect(r.returncode != 0 and "ids must be unique" in r.stderr, f"a duplicate id was not refused: {r.stdout}{r.stderr}")
+    r = run_cli(root, "art", "build", "copy/T003", "--force")
+    expect(r.returncode != 0 and "ids must be unique" in r.stderr, f"art build over a duplicate id was not refused: {r.stdout}{r.stderr}")
 
 
 TESTS = [

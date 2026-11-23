@@ -72,7 +72,7 @@ A walk-through for a humanoid with a staff, using the CLI directly. In Claude Co
 }
 ```
 
-The folder name usually equals the `id`; a unit may also live in a subfolder (e.g. `heroes/botanist`), and outputs are still named by its `id`. Ids must be unique across the project; the tool refuses two units with the same id.
+The folder name usually equals the `id`; a unit may also live in a subfolder (e.g. `heroes/botanist`), and outputs are still named by its `id`. Ids must be unique across the project: `generate`, `build`, `palette-swap`, `art` and `verify` refuse two units with the same id.
 
 **2. Design pass.** Generate three candidates at once and pick the design you like, whatever its size:
 

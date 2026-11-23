@@ -18,7 +18,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from .codexrun import Target, calls_used, check_banned, check_batch, display_path, load_record, run_batch, write_sheet
-from .common import (Context, SpriteError, Unit, json_bytes, list_units, load_unit, parse_hex, read_json, sha256_file,
+from .common import (Context, SpriteError, Unit, json_bytes, load_unit, parse_hex, read_json, sha256_file,
                      unit_paths_by_id)
 from .generate import require_design
 from .imaging import png_bytes, same_png

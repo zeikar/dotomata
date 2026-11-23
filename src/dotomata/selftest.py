@@ -965,7 +965,7 @@ def test_generate(tmp: Path, real: dict) -> None:
     (t005 / "unit.json").write_bytes(json_bytes({"id": "T005", "kind": "tiny", "equipment": ["weapon"],
                                                  "design": "a tiny test swordsman", "actions": {}}))
     r = run_cli(root, "generate", "T005", env={**env, "FAKE_CODEX_SCENARIO": "json"})
-    expect(r.returncode == 0 and "measured height 15 vs target 8 +-2: FAIL" in r.stdout, f"weapon FAIL line: {r.stdout}")
+    expect(r.returncode == 0 and "measured height 15 vs target 8 +-2: FAIL" in r.stdout, f"weapon FAIL line: {r.stdout}{r.stderr}")
     e = json.loads((t005 / "generation.json").read_text())["generations"][0]
     expect((e["height_check"], e["adopted"], e["reason"]) ==
            ("FAIL", False, "height 15 vs 8+-2, over the equipment allowance +4"), f"weapon carrier dropped fields {e}")
