@@ -1,0 +1,62 @@
+{
+  "unit": "silhouette_humanoid",
+  "kind": "humanoid",
+  "sheet": "silhouette_humanoid_sheet.png",
+  "mask": "silhouette_humanoid_mask.png",
+  "sheet_size": {
+    "width": 512,
+    "height": 192
+  },
+  "cell": {
+    "width": 128,
+    "height": 96
+  },
+  "foot": {
+    "x": 52,
+    "y": 92
+  },
+  "display_scale": 3,
+  "actions": [
+    {
+      "name": "idle",
+      "template": "silhouette_idle",
+      "frame_ms": 200,
+      "strike_frame": -1,
+      "frames": [
+        {
+          "name": "silhouette_humanoid_idle_0",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "name": "silhouette_humanoid_idle_1",
+          "x": 128,
+          "y": 0
+        },
+        {
+          "name": "silhouette_humanoid_idle_2",
+          "x": 256,
+          "y": 0
+        },
+        {
+          "name": "silhouette_humanoid_idle_3",
+          "x": 384,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "name": "down",
+      "template": "silhouette_down",
+      "frame_ms": 70,
+      "strike_frame": -1,
+      "frames": [
+        {
+          "name": "silhouette_humanoid_down_0",
+          "x": 0,
+          "y": 96
+        }
+      ]
+    }
+  ]
+}

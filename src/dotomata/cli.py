@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import sys
 from importlib import resources
 from pathlib import Path
@@ -396,7 +397,7 @@ def cmd_checkpoint(ctx, args):
 
 def cmd_selftest(args):
     from .selftest import run
-    return run()
+    return run(args.config.resolve() if args.config is not None else None)
 
 
 def default_config_bytes() -> bytes:
@@ -407,6 +408,12 @@ def cmd_init(args):
     path = args.config if args.config is not None else args.root / CONFIG_NAME
     write_new(path, default_config_bytes(), args.force)
     print(f"wrote {path}")
+    # Candidates and previews are large and regenerable; keep them out of git.
+    preview = Path(json.loads(default_config_bytes())["paths"]["preview"])
+    ignore = args.root / preview.parent / ".gitignore"
+    if not ignore.exists():
+        write_new(ignore, f"{preview.name}/\n".encode(), False)
+        print(f"wrote {ignore}")
     return 0
 
 
@@ -415,7 +422,7 @@ def main(argv=None) -> int:
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--root", type=Path, default=Path("."),
                    help="project root; every path in the config is relative to it (default: the current directory)")
-    p.add_argument("--config", type=Path, help=f"config file (default: <root>/{CONFIG_NAME})")
+    p.add_argument("--config", type=Path, help=f"config file, relative to the current directory (default: <root>/{CONFIG_NAME})")
     sub = p.add_subparsers(dest="command", required=True)
 
     i = sub.add_parser("init", help=f"write the default config to <root>/{CONFIG_NAME} (or --config)")

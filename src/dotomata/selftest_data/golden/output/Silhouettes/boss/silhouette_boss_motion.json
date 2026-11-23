@@ -1,0 +1,62 @@
+{
+  "unit": "silhouette_boss",
+  "kind": "boss",
+  "sheet": "silhouette_boss_sheet.png",
+  "mask": "silhouette_boss_mask.png",
+  "sheet_size": {
+    "width": 512,
+    "height": 256
+  },
+  "cell": {
+    "width": 128,
+    "height": 128
+  },
+  "foot": {
+    "x": 60,
+    "y": 124
+  },
+  "display_scale": 3,
+  "actions": [
+    {
+      "name": "idle",
+      "template": "silhouette_idle",
+      "frame_ms": 200,
+      "strike_frame": -1,
+      "frames": [
+        {
+          "name": "silhouette_boss_idle_0",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "name": "silhouette_boss_idle_1",
+          "x": 128,
+          "y": 0
+        },
+        {
+          "name": "silhouette_boss_idle_2",
+          "x": 256,
+          "y": 0
+        },
+        {
+          "name": "silhouette_boss_idle_3",
+          "x": 384,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "name": "down",
+      "template": "silhouette_down",
+      "frame_ms": 70,
+      "strike_frame": -1,
+      "frames": [
+        {
+          "name": "silhouette_boss_down_0",
+          "x": 0,
+          "y": 128
+        }
+      ]
+    }
+  ]
+}

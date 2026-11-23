@@ -1,0 +1,11 @@
+{
+  "id": "silhouette_humanoid",
+  "kind": "humanoid",
+  "rig": "silhouette",
+  "height_reference": "kind",
+  "description": "Flat humanoid silhouette for units without pixel art. A game tints the mask sheet with a per-unit color.",
+  "actions": {
+    "idle": "silhouette_idle",
+    "down": "silhouette_down"
+  }
+}

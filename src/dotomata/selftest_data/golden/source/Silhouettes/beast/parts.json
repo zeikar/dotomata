@@ -1,0 +1,20 @@
+{
+  "mask": "parts_mask.txt",
+  "joints": {
+    "foot": [
+      34,
+      51
+    ]
+  },
+  "added": {},
+  "swaps": {},
+  "variants": {
+    "down": {
+      "file": "down.txt",
+      "foot": [
+        36,
+        17
+      ]
+    }
+  }
+}

@@ -14,6 +14,7 @@ import copy
 import hashlib
 import json
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -26,8 +27,9 @@ from PIL import Image
 
 from . import checks
 from .assemble import compose_frame, resolve_action, resolve_actions, total_offsets
-from .common import (CONFIG_NAME, PALETTE_SYMBOLS, Context, SpriteError, Unit, grid_bytes, json_bytes, load_context,
-                     load_unit, opaque, render_rgba, to_hex)
+from .common import (CONFIG_NAME, PALETTE_SYMBOLS, Context, SpriteError, Unit, grid_bytes, json_bytes, list_units, load_context,
+                     load_unit, opaque, read_json, render_rgba, to_hex)
+from .build import verify
 from .convert import convert_image
 from .fixes import apply_fixes, edits_from_png
 from .imaging import png_bytes, same_png
@@ -498,7 +500,7 @@ def test_motion_rules(real_ctx: Context) -> None:
             for i, frame in enumerate(action.frames):
                 total_offsets(p["rigs"][t["rig"]], frame.get("offsets", {}), f"template {tname} frame {i}")
         except SpriteError as e:
-            raise Failure(f"default config: {e}") from e
+            raise Failure(f"config: {e}") from e
     for rig, required in p["required_actions"].items():
         expect(rig in p["rigs"], f"required_actions names unknown rig {rig}")
         for name in required:
@@ -743,7 +745,7 @@ def fake_codex_env(tmp: Path) -> tuple[dict, Path, Path, Path]:
     Image.fromarray(synthetic_ai_image(), "RGB").save(image)
     log = tmp / "fake_codex_calls.jsonl"
     fake = DATA / "fake_codex.py"
-    env = {"DOTOMATA_CODEX_CMD": f"{sys.executable} {fake}", "CODEX_HOME": str(home),
+    env = {"DOTOMATA_CODEX_CMD": f"{shlex.quote(sys.executable)} {shlex.quote(str(fake))}", "CODEX_HOME": str(home),
            "FAKE_CODEX_IMAGE": str(image), "FAKE_CODEX_LOG": str(log)}
     return env, log, image, fake
 
@@ -1196,11 +1198,53 @@ def test_same_png() -> None:
     expect(not same_png(png_bytes(rgb), deep), "a 16-bit file must not match")
 
 
+def test_golden(tmp: Path, real: dict) -> None:
+    """Rebuilds the four committed silhouette units and compares them with their committed
+    outputs, the one check against outputs made by an earlier version of the tool."""
+    root = tmp / "repo"
+    ctx = Context(root=root, project=real)
+    shutil.copytree(DATA / "golden" / "source", ctx.source_dir)
+    shutil.copytree(DATA / "golden" / "output", ctx.output_dir)
+    units = [u for u in list_units(ctx) if u.startswith("Silhouettes/")]
+    expect(len(units) == 4, f"expected 4 silhouette sources, found {units}")
+    problems = verify(ctx, units)
+    expect(not problems, "silhouettes do not rebuild: " + "; ".join(problems))
+    for path in units:
+        motion = json.loads((ctx.output_dir / path / f"{load_unit(ctx, path).id}_motion.json").read_text())
+        counts = {a["name"]: len(a["frames"]) for a in motion["actions"]}
+        expect(counts == {"idle": 4, "down": 1}, f"{path} actions {counts}")
+
+
+def test_init_and_config(tmp: Path, real: dict) -> None:
+    """init writes the default config and keeps previews out of git; --config is read from
+    the current directory, ignores unknown sections, and paths in it stay relative to --root."""
+    root = tmp / "proj"
+    root.mkdir()
+    r = run_cli(root, "init")
+    expect(r.returncode == 0, f"init failed: {r.stdout}{r.stderr}")
+    expect((root / CONFIG_NAME).read_bytes() == (Path(__file__).resolve().parent / "default_config.json").read_bytes(),
+           "init must write the default config unchanged")
+    preview = Path(real["paths"]["preview"])
+    ignore = root / preview.parent / ".gitignore"
+    expect(ignore.read_text() == f"{preview.name}/\n", f"init must ignore the preview folder: {ignore}")
+    r = run_cli(root, "init")
+    expect(r.returncode != 0 and "refusing to overwrite" in r.stderr, "a second init must refuse to overwrite")
+    other = copy.deepcopy(real)
+    other["ui"] = {"anything": 1}
+    other["paths"]["ui_output"] = "elsewhere"
+    conf = tmp / "conf" / "other.json"
+    conf.parent.mkdir()
+    conf.write_bytes(json_bytes(other))
+    r = subprocess.run([sys.executable, "-m", __package__, "--root", str(root), "--config", "conf/other.json", "verify"],
+                       capture_output=True, text=True, cwd=tmp, timeout=300)
+    expect(r.returncode == 0 and "verify: OK" in r.stdout, f"verify with --config from cwd failed: {r.stdout}{r.stderr}")
+
+
 def default_project() -> dict:
     return json.loads((Path(__file__).resolve().parent / "default_config.json").read_text(encoding="utf-8"))
 
 
-def run() -> int:
+def run(config: Path | None = None) -> int:
     # The tests read only the project dict from this context; each builds its own temp tree.
     real_ctx = Context(root=Path("."), project=default_project())
     tests = [
@@ -1223,7 +1267,14 @@ def run() -> int:
         ("generate: counts, prompt size, reference modes, height status, no overwrite, cap, checkpoint gating", lambda tmp: test_generate(tmp, real_ctx.project)),
         ("generate: batch reservation, concurrency, variants, cap, partial failure, design file", lambda tmp: test_generate_batch(tmp, real_ctx.project)),
         ("verify: same pixels under another PNG compression match; a changed pixel, mode, depth or extra chunk does not", lambda tmp: test_same_png()),
+        ("golden: the committed silhouette units rebuild to their committed outputs", lambda tmp: test_golden(tmp, real_ctx.project)),
+        ("init and --config: default config, ignored previews, no overwrite, unknown sections, paths from cwd",
+         lambda tmp: test_init_and_config(tmp, real_ctx.project)),
     ]
+    if config is not None:
+        # The project's own config gets the same structural check as the default one.
+        own = Context(root=Path("."), project=read_json(config))
+        tests.append((f"motion: templates, rigs and kinds of {config}", lambda tmp: test_motion_rules(own)))
     # Imported here: they build on this module's helpers.
     from .selftest_art import TESTS as ART_TESTS
     from .selftest_provenance import TESTS as PROVENANCE_TESTS

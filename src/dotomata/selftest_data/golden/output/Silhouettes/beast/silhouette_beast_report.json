@@ -1,0 +1,56 @@
+{
+  "unit": "silhouette_beast",
+  "palette_swap_of": null,
+  "colors": 1,
+  "height": 52,
+  "hand_fixes": {
+    "opaque_cells": 1752,
+    "changed_cells": 0,
+    "percent": 0.0,
+    "by_category": {}
+  },
+  "new_cells": {
+    "occluded": {},
+    "swaps": {},
+    "variants": {
+      "down": 1109
+    },
+    "total": 1109
+  },
+  "generation": {
+    "image_generation_calls": 0,
+    "candidates": 0
+  },
+  "checks": [
+    {
+      "name": "no_semi_transparent",
+      "passed": true,
+      "detail": "0 semi-transparent pixels"
+    },
+    {
+      "name": "palette_cap",
+      "passed": true,
+      "detail": "1 colors (cap 24)"
+    },
+    {
+      "name": "transparent_background",
+      "passed": true,
+      "detail": "ok"
+    },
+    {
+      "name": "equal_cell_size",
+      "passed": true,
+      "detail": "frame sizes [(128, 96)], expected (128, 96)"
+    },
+    {
+      "name": "height",
+      "passed": true,
+      "detail": "idle frame 0 height 52, reference 52 (kind beast) +-2"
+    },
+    {
+      "name": "feet_on_baseline",
+      "passed": true,
+      "detail": "ok"
+    }
+  ]
+}
