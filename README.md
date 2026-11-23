@@ -1,10 +1,10 @@
 # dotomata
 
-**dotomata** — *dot + automata.* An agent pipeline that takes a character from concept art to a validated, game-ready animated pixel sprite sheet.
+**AI pixel art sprite generator for 2D games.** dotomata (*dot + automata*) is an agent pipeline that takes a character from concept art to a validated, game-ready animated pixel sprite sheet: idle, attack, hit, guard and down animations, a sprite sheet PNG and a motion JSON any engine can read. It runs as a Claude Code plugin or a Python CLI, with image generation through the Codex CLI.
 
-![Four animated sprites made with dotomata: two adventurers, a lynx and a tortoise, each idling and then attacking](docs/images/demo.gif)
+![Animated pixel art sprites made with dotomata: two adventurers, a lynx and a tortoise, each idling and then attacking](docs/images/demo.gif)
 
-![Card art on the left of each pair, the pixel sprite drawn from it on the right](docs/images/art-to-sprite.png)
+![AI concept art to pixel art sprite: card art on the left of each pair, the pixel sprite drawn from it on the right](docs/images/art-to-sprite.png)
 
 ## What makes it different
 
