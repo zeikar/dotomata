@@ -2,9 +2,9 @@
 
 **AI pixel art sprite generator for 2D games.** dotomata (*dot + automata*) is an agent pipeline that takes a character from concept art to a validated, game-ready animated pixel sprite sheet: idle, attack, hit, guard and down animations, a sprite sheet PNG and a motion JSON any engine can read. It runs as a Claude Code plugin or a Python CLI, with image generation through the Codex CLI.
 
-![Animated pixel art sprites made with dotomata: two adventurers, a lynx and a tortoise, each idling and then attacking](docs/images/demo.gif)
+![Animated pixel art sprites made with dotomata: two adventurers, a lynx and a tortoise, each idling and then attacking](https://raw.githubusercontent.com/zeikar/dotomata/main/docs/images/demo.gif)
 
-![AI concept art to pixel art sprite: card art on the left of each pair, the pixel sprite drawn from it on the right](docs/images/art-to-sprite.png)
+![AI concept art to pixel art sprite: card art on the left of each pair, the pixel sprite drawn from it on the right](https://raw.githubusercontent.com/zeikar/dotomata/main/docs/images/art-to-sprite.png)
 
 ## What makes it different
 
@@ -47,10 +47,11 @@ The skills check the prerequisites on first use and offer to create `dotomata.js
 ## Use the CLI without Claude Code
 
 ```sh
-uvx --from git+https://github.com/zeikar/dotomata dotomata --help
+uvx dotomata --help            # run without installing
+uv tool install dotomata       # or install the command (or `pipx install --python 3.12 dotomata`)
 ```
 
-or clone the repository and run it from your project root:
+dotomata pins its Python, Pillow and numpy versions exactly so rebuilds stay identical, so install it as a tool in its own environment rather than into a project's environment. Or clone the repository and run it from your project root:
 
 ```sh
 git clone https://github.com/zeikar/dotomata
@@ -81,7 +82,7 @@ Describe a character in `sprites/source/knight/unit.json`:
 }
 ```
 
-Then, in Claude Code, run `/dotomata:sprite knight`. Without Claude Code, follow [Your first unit](docs/sprites.md#your-first-unit): `generate`, `reduce`, `checkpoint`, `convert`, `fix`, `parts`, `assemble`, `build`, `verify`.
+Then, in Claude Code, run `/dotomata:sprite knight`. Without Claude Code, follow [Your first unit](https://github.com/zeikar/dotomata/blob/main/docs/sprites.md#your-first-unit): `generate`, `reduce`, `checkpoint`, `convert`, `fix`, `parts`, `assemble`, `build`, `verify`.
 
 ## Outputs
 
@@ -99,10 +100,10 @@ The sheet and the motion JSON are all an engine needs; nothing is tied to a part
 
 ## Docs
 
-- [Sprites](docs/sprites.md): the workflow, file formats, rigs and templates, commands, checks, guardrails and reproduction.
-- [Card art and backgrounds](docs/card-art.md)
-- [Configuration](docs/config.md): every key of `dotomata.json`.
+- [Sprites](https://github.com/zeikar/dotomata/blob/main/docs/sprites.md): the workflow, file formats, rigs and templates, commands, checks, guardrails and reproduction.
+- [Card art and backgrounds](https://github.com/zeikar/dotomata/blob/main/docs/card-art.md)
+- [Configuration](https://github.com/zeikar/dotomata/blob/main/docs/config.md): every key of `dotomata.json`.
 
 ## License
 
-The code and docs are [MIT](LICENSE). The example art in `docs/images/` shows characters from the author's own game in development and is not covered by the MIT license.
+The code and docs are [MIT](https://github.com/zeikar/dotomata/blob/main/LICENSE). The example art in `docs/images/` shows characters from the author's own game in development and is not covered by the MIT license.
