@@ -48,7 +48,7 @@ The skills check the prerequisites on first use and offer to create `dotomata.js
 
 ```sh
 uvx dotomata --help            # run without installing
-uv tool install dotomata       # or install the command (or `pipx install --python 3.12 dotomata`)
+uv tool install dotomata       # or install it (pipx: pipx install --python 3.12 dotomata)
 ```
 
 dotomata pins its Python, Pillow and numpy versions exactly so rebuilds stay identical, so install it as a tool in its own environment rather than into a project's environment. Or clone the repository and run it from your project root:
