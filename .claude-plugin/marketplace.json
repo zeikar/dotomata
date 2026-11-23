@@ -1,0 +1,14 @@
+{
+  "name": "dotomata",
+  "description": "dotomata: a pixel sprite, card art and background pipeline for Claude Code.",
+  "owner": {
+    "name": "zeikar"
+  },
+  "plugins": [
+    {
+      "name": "dotomata",
+      "source": "./",
+      "description": "Agent pipeline that turns a character from concept art into a validated, game-ready animated pixel sprite sheet; also card art and backgrounds, generated through the Codex CLI."
+    }
+  ]
+}

@@ -94,7 +94,7 @@ def _generate_options(p) -> None:
 
 def _invalidate_options(p, owner: str) -> None:
     p.add_argument(owner)
-    p.add_argument("--candidate", required=True, help="the recorded candidate, e.g. art_candidate_2.png")
+    p.add_argument("--candidate", required=True, help="the recorded candidate, e.g. art_candidate_2.png or bg_candidate_1.png")
     p.add_argument("--reason", required=True, help="why it is not this run's image (kept in the record)")
 
 

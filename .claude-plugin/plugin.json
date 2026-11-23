@@ -1,0 +1,21 @@
+{
+  "name": "dotomata",
+  "version": "0.1.0",
+  "description": "Agent pipeline that turns a character from concept art into a validated, game-ready animated pixel sprite sheet; also card art and backgrounds, generated through the Codex CLI.",
+  "author": {
+    "name": "zeikar"
+  },
+  "homepage": "https://github.com/zeikar/dotomata",
+  "repository": "https://github.com/zeikar/dotomata",
+  "license": "MIT",
+  "keywords": [
+    "pixel-art",
+    "sprite",
+    "sprite-sheet",
+    "animation",
+    "gamedev",
+    "card-art",
+    "image-generation",
+    "codex"
+  ]
+}

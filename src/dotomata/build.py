@@ -40,7 +40,9 @@ def reference_height(ctx: Context, unit: Unit) -> tuple[int, str]:
     ref = kind.get("reference_unit")
     if unit.data.get("height_reference") == "kind" or not ref or ref == unit.id:
         return kind["height"], f"kind {unit.kind}"
-    report = ctx.output_dir / ref / f"{ref}_report.json"
+    # reference_unit is a unit id; sprite outputs live under the unit's source path.
+    ref_path = next((p for p in list_units(ctx) if load_unit(ctx, p).id == ref), ref)
+    report = ctx.output_dir / ref_path / f"{ref}_report.json"
     if not report.is_file():
         return kind["height"], f"kind {unit.kind}; reference unit {ref} not built yet"
     return int(read_json(report)["height"]), f"reference unit {ref}"

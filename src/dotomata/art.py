@@ -531,12 +531,15 @@ def art_units(ctx: Context) -> list[str]:
     """Unit paths that have card art: committed outputs or an art source."""
     root = ctx.root / ctx.project["paths"]["art_output"]
     built = {p.name for p in root.iterdir() if p.is_dir()} if root.is_dir() else set()
-    paths = []
+    # Card art folders are named by unit id, which may differ from the unit's source path.
+    paths, ids = [], set()
     for path in list_units(ctx):
         source = ctx.source_dir / path / "art"
-        if path in built or (source / ADOPTION).is_file() or (source / RECOLOR).is_file():
+        uid = load_unit(ctx, path).id
+        if uid in built or (source / ADOPTION).is_file() or (source / RECOLOR).is_file():
             paths.append(path)
-    unknown = built - set(paths)
+            ids.add(uid)
+    unknown = built - ids
     if unknown:
         raise SpriteError(f"card art folders without a unit.json: {sorted(unknown)}")
     return paths

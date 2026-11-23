@@ -6,13 +6,15 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, PngImagePlugin
 
 from .art import english_name, recolor
-from .common import Context, Unit, json_bytes, sha256_file
+from .build import reference_height
+from .common import Context, Unit, json_bytes, load_unit, sha256_file
 from .generate import build_prompt
 from .selftest import expect, expect_error, fake_codex_env, run_cli, tiny_project, write_project, write_tiny_tree
 
@@ -436,12 +438,35 @@ def test_art_optional(tmp: Path, real: dict) -> None:
            f"style reference record {entry.get('style_reference')}")
 
 
+def test_nested_units(tmp: Path, real: dict) -> None:
+    """A unit's source path may differ from its id (a subfolder): card art, verify and the
+    reference unit's height still find it."""
+    root, project = art_tree(tmp, real)
+    source = root / project["paths"]["source"]
+    (source / "people").mkdir()
+    for uid in ("T001", "T003"):
+        shutil.move(str(source / uid), str(source / "people" / uid))
+    r = run_cli(root, "art", "build", "people/T003")
+    expect(r.returncode == 0, f"art build of a nested unit failed: {r.stdout}{r.stderr}")
+    expect((root / project["paths"]["art_output"] / "T003/T003_base_full.png").is_file(), "card art is named by unit id")
+    r = run_cli(root, "build", "people/T001")
+    expect(r.returncode == 0, f"build of a nested unit failed: {r.stdout}{r.stderr}")
+    r = run_cli(root, "verify")
+    expect(r.returncode == 0 and "verify: OK" in r.stdout, f"verify with nested units failed: {r.stdout}{r.stderr}")
+    referenced = copy.deepcopy(project)
+    referenced["kinds"]["tiny"]["reference_unit"] = "T001"
+    ctx = Context(root, referenced)
+    height, why = reference_height(ctx, load_unit(ctx, "T004"))
+    expect(why == "reference unit T001", f"the nested reference unit was not found: {why}")
+
+
 TESTS = [
     ("design: sprite prompt from design and sprite_note, no design refused", lambda real_ctx, tmp: test_prompts(real_ctx)),
     ("generate --from-art: adopted card art as the reference, record, exclusive, refused without art",
      lambda real_ctx, tmp: test_sprite_from_art(tmp, real_ctx.project)),
     ("art: skip without actions, design, dot reference, prompt, counts, cap, adoption, bust, build, verify, "
      "placeholder, recolour", lambda real_ctx, tmp: test_art(tmp, real_ctx.project)),
+    ("units in subfolders: card art by id, verify, reference unit height", lambda real_ctx, tmp: test_nested_units(tmp, real_ctx.project)),
     ("art: no string table (literal name), no style reference (no image, no sentence, null record)",
      lambda real_ctx, tmp: test_art_optional(tmp, real_ctx.project)),
     ("bg: placeholder, prompt, counts, cap, adoption, cover-fit build, verify",
