@@ -122,11 +122,16 @@ def list_units(ctx: Context) -> list[str]:
 
 def unit_paths_by_id(ctx: Context) -> dict[str, str]:
     """Unit id -> source path. Ids must be unique: card art folders and frame names use them."""
-    # Only the id is read, so an unrelated unit with other errors does not block this check.
+    # Only the id is read, and a unit.json that is not valid yet is skipped, so an unrelated
+    # unit being edited does not block this check; loading that unit reports its own error.
     found: dict[str, str] = {}
     for path in list_units(ctx):
-        uid = read_json(ctx.source_dir / path / "unit.json").get("id")
-        if uid is None:
+        try:
+            data = read_json(ctx.source_dir / path / "unit.json")
+        except SpriteError:
+            continue
+        uid = data.get("id") if isinstance(data, dict) else None
+        if not isinstance(uid, str):
             continue
         if uid in found:
             raise SpriteError(f"unit id '{uid}' is used by both {found[uid]} and {path}; ids must be unique")

@@ -465,6 +465,13 @@ def test_nested_units(tmp: Path, real: dict) -> None:
     expect(r.returncode != 0 and "ids must be unique" in r.stderr, f"a duplicate id was not refused: {r.stdout}{r.stderr}")
     r = run_cli(root, "art", "build", "copy/T003", "--force")
     expect(r.returncode != 0 and "ids must be unique" in r.stderr, f"art build over a duplicate id was not refused: {r.stdout}{r.stderr}")
+    # A unit.json being edited elsewhere (broken JSON, a non-string id) does not block other units.
+    shutil.rmtree(source / "copy")
+    for name, text in (("wip", "{\"id\": "), ("odd", '{"id": ["x"], "kind": "tiny"}'), ("arr", "[]")):
+        (source / name).mkdir()
+        (source / name / "unit.json").write_text(text, encoding="utf-8")
+    r = run_cli(root, "art", "build", "people/T003", "--force")
+    expect(r.returncode == 0, f"a broken unit.json elsewhere blocked art build: {r.stdout}{r.stderr}")
 
 
 TESTS = [
