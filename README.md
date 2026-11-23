@@ -62,11 +62,13 @@ Every path in the config is relative to the directory you run it from (or `--roo
 
 ## Quick start
 
-In your project (`dotomata` stands for either command above):
+In your project folder:
 
 ```sh
-dotomata init        # writes dotomata.json and sprites/.gitignore
+uvx dotomata init        # writes dotomata.json and sprites/.gitignore
 ```
+
+Every command works the same way: `uvx dotomata generate knight`, `uvx dotomata build knight`, `uvx dotomata verify`. After `uv tool install dotomata`, drop the `uvx`: `dotomata init`. The examples below write `dotomata` for either.
 
 Describe a character in `sprites/source/knight/unit.json`:
 
