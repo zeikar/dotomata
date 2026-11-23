@@ -36,7 +36,7 @@ test -f dotomata.json && echo "config found"
 
 1. `DOTOMATA checkpoint <unit>` shows generation count, cap and the checkpoint records. (If `<source>/<unit>/unit.json` does not exist yet, segment 1 starts by writing it.)
 2. Its `approved` field (the approvals that still count) decides the next segment. Redoing checkpoint 1 voids the earlier approvals of 2 and 3.
-   - Checkpoint 1 not approved: segment 1. If the latest checkpoint 1 record is a 1a (a rejection whose note says "size pass"), run the size pass with that candidate; otherwise the design pass.
+   - Checkpoint 1 not approved: segment 1. If there is a 1a record (a checkpoint 1 rejection whose note starts with `Design pick, size pass next`) and no checkpoint 1 approval after it, run the size pass with that record's candidate, even when the user has rejected size-pass candidates since; otherwise the design pass. If the user's rejection asks for another design, run the design pass instead.
    - Only checkpoint 1 approved: segment 2.
    - Checkpoints 1 and 2 approved: segment 3.
    - All three approved: say it is done and ask whether to redo anything.
@@ -49,7 +49,8 @@ test -f dotomata.json && echo "config found"
   - the exact CLI invocation (`DOTOMATA` with the absolute plugin root) and the absolute path of `docs/sprites.md`;
   - the project root (absolute) and the unit path;
   - the segment number, and for segment 1 whether it is the design pass or the size pass (with the candidate picked at 1a and any `--height`);
-  - the user's words from the last checkpoint (rejection reasons, things to fix), verbatim; for a new unit, the agreed `unit.json` contents.
+  - the user's words from the last checkpoint (rejection reasons, things to fix), verbatim; for a new unit, the agreed `unit.json` contents;
+  - for a redo, what changed: "checkpoint 1 was redone" (segment 2 converts again with `--force` and starts the hand fixes over; segment 3 re-inits the mask with `--force`) or "rebuild of existing outputs" (segment 3 after a rejected checkpoint 3 or a redone segment 2: `build --force`).
 - **Design pass.** A unit with adopted card art (`<source>/<unit>/art/art.json`) uses `--from-art` (usually `--batch 3 --from-art`); `generate` refuses a design pass without a reference for it. A unit without card art runs without a reference image: the height is fixed by the size pass, and a scale reference makes a new character copy the reference's face. Tell the agent to write in `design` what sets this character apart from the user's other characters.
 - **Checkpoint 1a** is yours. Open the design candidate sheet (and the card art, if any) with Read and pick the candidate closest to the card art and `design` in hair, face, outfit, equipment, colours and signature item. Do not ask the user; go straight to the size pass. Record it, if the pick does not already `PASS`, as `DOTOMATA checkpoint <unit> --record 1 --reject --candidate candidate_N.png --note "Design pick, size pass next. Agent check: <what you compared and why this one>"`, then dispatch segment 1 again as the size pass with that candidate. If the figure holds a weapon or staff above its head, give the agent the whole-figure height for `--height` so that head to foot comes out at the target. If the pick already `PASS`es and is good to use, skip the size pass and show it at checkpoint 1.
 - **Size pass.** The agent runs `reduce` and one `--design-from-file` batch (3 runs with the three cleanup variants from the docs). Candidates that pass go to checkpoint 1.
@@ -69,7 +70,7 @@ test -f dotomata.json && echo "config found"
 
 ## Recording checkpoints
 
-For checkpoints 1 and 3, record only after the user answers; the note is a short paraphrase of their words. For 1a and 2, which you make, the note starts with `Agent check:` and says what you looked at and why you decided, plus anything the user said about it.
+For checkpoints 1 and 3, record only after the user answers; the note is a short paraphrase of their words. For 1a and 2, which you make, the note says what you looked at and why you decided, plus anything the user said about it: a 1a note starts with `Design pick, size pass next. Agent check:` (the start of the next session reads that prefix), a checkpoint 2 note with `Agent check:`.
 
 ```sh
 DOTOMATA checkpoint <unit> --record 1 --approve --candidate candidate_2.png --note "<reason>"

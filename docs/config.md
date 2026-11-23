@@ -46,7 +46,7 @@ A kind sets the cell every frame of a unit is drawn in, the height the unit shou
 | `cell` | `[width, height]` of every frame (art px). |
 | `height` | Target height (art px) of the figure in idle frame 0, without the rig's `height_excludes` layers. |
 | `foot` | `[x, y]` of the foot point inside the cell (top-left origin, y down). Every standing frame puts the bottom row of the foot part on this row. Keep `y` below the top row: the cell's border must stay empty. |
-| `reference_unit` | `null`, or the id of a built unit of this kind. When set, the height target of the kind's other units is that unit's built height (from its report) instead of `height`. That unit's folder must sit directly under `paths.source` and be named after its id. |
+| `reference_unit` | `null`, or the id of a built unit of this kind. When set, the height target of the kind's other units is that unit's built height (from its report) instead of `height`. The unit is found by its id wherever its folder is. |
 | `rig` | Default rig for units of this kind. |
 
 Defaults: `humanoid` (128x96 cell, height 80, foot [52, 92]), `beast` (128x96, 52, [60, 92]), `slime` (128x96, 40, [60, 92]), `boss` (128x128, 112, [60, 124], rig `beast`). A unit's own `height` must be between 1 and its kind's foot y.

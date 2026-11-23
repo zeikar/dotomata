@@ -55,4 +55,4 @@ test -f dotomata.json && echo "config found"
 - Adopt only what the user picked. Never run `art adopt` or `bg adopt` before they choose.
 - Report each run's `note` and `error` (more than one generation, a duplicate image, no image) to the user. A candidate marked `invalid` cannot be adopted even if it is on the sheet. If a candidate looks like another unit's picture, compare sha256 values and mark it with `art invalidate` / `bg invalidate` as the docs describe.
 - Do not commit on the user's behalf unless they ask. When they do, commit the source folder's adopted file, records, comparison sheet and `dot_ref.png`, and the outputs; never the preview folder.
-- At the end, `DOTOMATA verify <unit>` (or `verify backgrounds/<id>`) must pass.
+- At the end, `DOTOMATA verify` must pass. Run it without a unit: a unit named on the command line must also have built sprite outputs, and a character usually gets its card art before its sprite.

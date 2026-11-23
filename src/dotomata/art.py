@@ -18,7 +18,8 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from .codexrun import Target, calls_used, check_banned, check_batch, display_path, load_record, run_batch, write_sheet
-from .common import Context, SpriteError, Unit, json_bytes, list_units, load_unit, parse_hex, read_json, sha256_file
+from .common import (Context, SpriteError, Unit, json_bytes, list_units, load_unit, parse_hex, read_json, sha256_file,
+                     unit_paths_by_id)
 from .generate import require_design
 from .imaging import png_bytes, same_png
 from .reduce import block_image
@@ -533,9 +534,8 @@ def art_units(ctx: Context) -> list[str]:
     built = {p.name for p in root.iterdir() if p.is_dir()} if root.is_dir() else set()
     # Card art folders are named by unit id, which may differ from the unit's source path.
     paths, ids = [], set()
-    for path in list_units(ctx):
+    for uid, path in unit_paths_by_id(ctx).items():
         source = ctx.source_dir / path / "art"
-        uid = load_unit(ctx, path).id
         if uid in built or (source / ADOPTION).is_file() or (source / RECOLOR).is_file():
             paths.append(path)
             ids.add(uid)

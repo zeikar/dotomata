@@ -458,6 +458,11 @@ def test_nested_units(tmp: Path, real: dict) -> None:
     ctx = Context(root, referenced)
     height, why = reference_height(ctx, load_unit(ctx, "T004"))
     expect(why == "reference unit T001", f"the nested reference unit was not found: {why}")
+    # Two folders with the same id would share card art and frame names: refused.
+    (source / "copy").mkdir()
+    shutil.copytree(source / "people" / "T003", source / "copy" / "T003")
+    r = run_cli(root, "verify")
+    expect(r.returncode != 0 and "ids must be unique" in r.stderr, f"a duplicate id was not refused: {r.stdout}{r.stderr}")
 
 
 TESTS = [
@@ -466,7 +471,7 @@ TESTS = [
      lambda real_ctx, tmp: test_sprite_from_art(tmp, real_ctx.project)),
     ("art: skip without actions, design, dot reference, prompt, counts, cap, adoption, bust, build, verify, "
      "placeholder, recolour", lambda real_ctx, tmp: test_art(tmp, real_ctx.project)),
-    ("units in subfolders: card art by id, verify, reference unit height", lambda real_ctx, tmp: test_nested_units(tmp, real_ctx.project)),
+    ("units in subfolders: card art by id, verify, reference unit height, duplicate ids refused", lambda real_ctx, tmp: test_nested_units(tmp, real_ctx.project)),
     ("art: no string table (literal name), no style reference (no image, no sentence, null record)",
      lambda real_ctx, tmp: test_art_optional(tmp, real_ctx.project)),
     ("bg: placeholder, prompt, counts, cap, adoption, cover-fit build, verify",

@@ -10,7 +10,7 @@ import numpy as np
 from . import checks
 from .assemble import Assembled, assemble_unit, measure_height, stand_anchor
 from .common import (Context, SpriteError, Unit, json_bytes, list_units, load_unit, opaque, parse_hex, read_json,
-                     render_rgba, write_new)
+                     render_rgba, unit_paths_by_id, write_new)
 from .imaging import flatten, gif_bytes, png_bytes, same_png, zoom
 from .parts import Art, load_art
 
@@ -41,7 +41,7 @@ def reference_height(ctx: Context, unit: Unit) -> tuple[int, str]:
     if unit.data.get("height_reference") == "kind" or not ref or ref == unit.id:
         return kind["height"], f"kind {unit.kind}"
     # reference_unit is a unit id; sprite outputs live under the unit's source path.
-    ref_path = next((p for p in list_units(ctx) if load_unit(ctx, p).id == ref), ref)
+    ref_path = unit_paths_by_id(ctx).get(ref, ref)
     report = ctx.output_dir / ref_path / f"{ref}_report.json"
     if not report.is_file():
         return kind["height"], f"kind {unit.kind}; reference unit {ref} not built yet"

@@ -7,9 +7,9 @@
 ## What makes it different
 
 - **Every build is checked.** A sheet is written only if the figure is the target height, its feet sit on the foot row in every standing frame, it stays within the palette cap, it has no semi-transparent pixels, nothing touches the cell border, and every required action has its exact frame count.
-- **Reproducible rebuilds.** Every output is rebuilt from committed sources (the generated image, the grid, the hand-fix list, the part data). Outputs carry no dates, paths or tool versions, and the dependencies are pinned, so the same sources give the same pixels on any machine. `dotomata verify` rebuilds everything and compares it with what is on disk.
+- **Reproducible rebuilds.** Every output is rebuilt from committed sources (the generated image, the grid, the hand-fix list, the part data). Outputs carry no dates, paths or tool versions, and the dependencies are pinned, so the same sources give the same pixels. `dotomata verify` rebuilds everything and compares it with what is on disk.
 - **Provenance for every generated image.** Each run records its prompt, references, model, generation count and the image's sha256. The image is read from the run's own Codex session, never from a file the model saved, and a duplicate of any recorded image is refused.
-- **Human checkpoints.** The person adopts the candidate and approves the final animation. Every decision is recorded with its reason, and each segment starts only once the previous checkpoint is on file. Generation has a hard cap per character.
+- **Human checkpoints.** The person adopts the candidate and approves the final animation. Every decision is recorded with its reason. The plugin starts each segment only once the previous checkpoint is on file, and the CLI refuses to record checkpoint 2 or 3 before the one before it is approved. Generation has a hard cap per character.
 - **Rigged motions, not generated frames.** The image model draws one standing pose. Parts (head, torso, arms, legs, weapon, shield...) are split on a shared rig, and motion templates move them by whole pixels, so every frame stays on the same grid and palette, and a new character reuses every animation.
 
 ## How it works
@@ -32,12 +32,6 @@
 ```
 /plugin marketplace add zeikar/dotomata
 /plugin install dotomata@dotomata
-```
-
-On Claude Code 2.1.275 or later, one line does both:
-
-```
-/plugin install dotomata --marketplace zeikar/dotomata
 ```
 
 The plugin adds two skills and an agent:

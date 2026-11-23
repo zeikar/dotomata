@@ -50,17 +50,23 @@ Segment 1 has two passes ("Segment 1: design pass and size pass" in the docs). I
 
 ## Segment 2: convert and hand fixes
 
-1. `DOTOMATA convert <unit>` (the input is the image adopted at checkpoint 1). If the user adopted a reduced `ref_*.png` as the fallback, the tool reads it block by block; expect more fixes than usual on the face and small details.
+1. Convert, depending on what is already there:
+   - No `convert.json` yet: `DOTOMATA convert <unit>` (the input is the image adopted at checkpoint 1).
+   - `convert.json` exists and its `source` is the image adopted at checkpoint 1 (a redo of the hand fixes only): skip convert; keep `grid.txt` and work on `fixes.json`.
+   - `convert.json` exists from an earlier adoption and the caller says checkpoint 1 was redone: `DOTOMATA convert <unit> --force`, and start `fixes.json` over as an empty edit list (format in the docs): the old edits point at cells of the old grid.
+   - Otherwise stop and report the mismatch.
+
+   If the user adopted a reduced `ref_*.png` as the fallback, the tool reads it block by block; expect more fixes than usual on the face and small details.
 2. Look at `<preview>/<unit>/convert_zoom.png` and `grid.txt`, and write cell edits into `fixes.json` for the face, weapon, emblems and stray cells, each with a reason and a category from `fix_categories`. Fix any pink edge cells the convert output reports to the outline colour. Never edit `grid.txt`.
 3. `DOTOMATA fix <unit>`, and check the counts per category. If many cells were fixed, report what and why.
 4. If the caller passes an edited PNG from the user (their edit of the transparent `<preview>/<unit>/fixed_edit.png`), add it with `DOTOMATA fix <unit> --from-png <path> --category <category> --reason "<reason>"`. `fixed_zoom.png` has a solid background and cannot be read back.
 
 ## Segment 3: parts, motions, build
 
-1. `DOTOMATA parts <unit> --init` writes the mask skeleton. Replace every `?` in `parts_mask.txt` with the rig's symbols (table in the docs). Write the joints in `parts.json`: humanoid `neck`, `shoulder`, `hand`, `hip`, `foot`, with the foot's y on the legs' bottom row; beast only `foot`, on the back legs' bottom row; flyer only `foot`, on the torso's bottom row. `--init` puts the foot on the whole figure's bottom row, so correct it for a beast or a flyer.
+1. `DOTOMATA parts <unit> --init` writes the mask skeleton (with `--force` only when the caller says the grid changed since the last mask, i.e. checkpoint 1 was redone; a redo after checkpoint 3 keeps the existing mask and parts). Replace every `?` in `parts_mask.txt` with the rig's symbols (table in the docs). Write the joints in `parts.json`: humanoid `neck`, `shoulder`, `hand`, `hip`, `foot`, with the foot's y on the legs' bottom row; beast only `foot`, on the back legs' bottom row; flyer only `foot`, on the torso's bottom row. `--init` puts the foot on the whole figure's bottom row, so correct it for a beast or a flyer.
 2. Draw the cells a motion reveals in `added` grids, and the fallen pose as `variants.down` (for a flyer, lying on the ground). A flyer also draws `front_wing@up`, `front_wing@down`, `back_wing@up`, `back_wing@down` in `swaps` (the generated pose is mid-beat). A sword unit draws its arm and blade poses as swaps and wires them in with `overrides`. Anything a template gets wrong for this unit goes into its `overrides`; change the shared rigs and templates in `dotomata.json` only when the caller explicitly asks.
 3. `DOTOMATA parts <unit>` and `DOTOMATA assemble <unit>` for previews and checks. Check the draw order and the hidden parts by eye in `<preview>/<unit>/<id>_zoom.png`.
-4. When every check passes: `DOTOMATA build <unit>` (a palette swap: `DOTOMATA palette-swap <unit>`), then `DOTOMATA verify <unit>`. If the unit has `art/dot_ref.png`, the build refreshes it (`refreshed ...`); list it among the changed files.
+4. When every check passes: `DOTOMATA build <unit>` (a palette swap: `DOTOMATA palette-swap <unit>`; add `--force` when the caller says this is a rebuild of existing outputs), then `DOTOMATA verify <unit>`. If the unit has `art/dot_ref.png`, the build refreshes it (`refreshed ...`); list it among the changed files.
 
 ## Never
 
