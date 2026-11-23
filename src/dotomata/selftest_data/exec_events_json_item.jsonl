@@ -1,0 +1,6 @@
+{"type":"thread.started","thread_id":"019f0000-0000-7000-8000-00000000b002"}
+{"type":"turn.started"}
+{"type":"item.started","item":{"id":"ig_json_1","type":"image_generation","status":"in_progress"}}
+{"type":"item.completed","item":{"id":"ig_json_1","type":"image_generation","status":"completed"}}
+{"type":"item.completed","item":{"id":"item_2","type":"agent_message","text":"done"}}
+{"type":"turn.completed","usage":{"input_tokens":900,"cached_input_tokens":0,"output_tokens":20}}

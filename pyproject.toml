@@ -1,0 +1,23 @@
+[project]
+name = "dotomata"
+version = "0.1.0"
+description = "Pixel-art sprite, card art and background pipeline driven by codex image generation"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = "==3.12.*"
+# Pinned exactly: convert.json records the tool versions and verify compares them.
+dependencies = [
+    "pillow==12.3.0",
+    "numpy==2.5.4",
+]
+
+[project.scripts]
+dotomata = "dotomata.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dotomata"]

@@ -1,0 +1,372 @@
+{
+  "schema": 1,
+  "paths": {
+    "source": "sprites/source",
+    "output": "build/sprites",
+    "preview": "sprites/out",
+    "art_output": "build/art",
+    "bg_output": "build/backgrounds"
+  },
+  "display_scale": 3,
+  "frame_ms": 70,
+  "kinds": {
+    "humanoid": {"cell": [128, 96], "height": 80, "foot": [52, 92], "reference_unit": null, "rig": "humanoid"},
+    "beast": {"cell": [128, 96], "height": 52, "foot": [60, 92], "reference_unit": null, "rig": "beast"},
+    "slime": {"cell": [128, 96], "height": 40, "foot": [60, 92], "reference_unit": null, "rig": "slime"},
+    "boss": {"cell": [128, 128], "height": 112, "foot": [60, 124], "reference_unit": null, "rig": "beast"}
+  },
+  "height_tolerance": 2,
+  "action_order": ["idle", "attack", "hit", "guard", "down"],
+  "frames": {"idle": 4, "attack": 6, "hit": 2, "guard": 2, "down": 1},
+  "required_actions": {
+    "humanoid": ["idle", "attack", "hit", "down"],
+    "slime": ["idle", "attack", "hit", "down"],
+    "beast": ["idle", "attack", "hit", "down"],
+    "flyer": ["idle", "attack", "hit", "down"],
+    "silhouette": ["idle", "down"]
+  },
+  "strike_actions": ["attack"],
+  "max_windup_frames": 2,
+  "feet_exempt_actions": ["down"],
+  "palette": {
+    "max_colors": 24,
+    "kmeans_k": 26,
+    "seed": 20261015,
+    "kmeans_iterations": 100,
+    "merge_distance": 20
+  },
+  "convert": {
+    "background": [249, 5, 249],
+    "background_tolerance": 48,
+    "fringe": {"min_rb_over_g": 64, "max_distance": 150, "passes": 2},
+    "pixel_size_range": [3.0, 24.0],
+    "edge_threshold": 48,
+    "cell_sample_margin": 0.2,
+    "mode_bin_shift": 3,
+    "remove_isolated_cells": false
+  },
+  "reduce": {
+    "outline_max_luminance": 45,
+    "outline_min_share": 0.3333,
+    "ref_block": 12,
+    "ref_margin_blocks": 10,
+    "ref_background": "#ff00ff"
+  },
+  "fix_categories": ["face", "hair", "outline", "armor", "weapon", "shield", "staff", "emblem", "noise", "other"],
+  "preview": {
+    "zoom": 4,
+    "gif_scale": 3,
+    "gif_idle_loops": 2,
+    "gif_hold_last_ms": 280,
+    "background": "#2b2b33",
+    "batch_sheet_height": 512
+  },
+  "generation": {
+    "cap_per_unit": 15,
+    "batch_max": 3,
+    "codex_command": ["codex"],
+    "model": "gpt-6-luna",
+    "effort": "medium",
+    "timeout_seconds": 600,
+    "tool_instruction": "Use the image generation tool exactly once to draw the image described below. Do not retry and do not make variations, even if the result is imperfect. Do not save, copy or move any image file, and do not call the image tool a second time to fetch, show or return the picture: the result of your one call is collected automatically and nothing else is read. Reply with only the word done.",
+    "common_prompt": "pixel art game sprite, SD chibi proportions (about 2.5 heads tall), one character only, full body, standing idle pose, side view facing right, clean 1px dark outlines, limited palette (about 16-24 colors), no anti-aliasing, crisp hard-edged pixels, classic fantasy RPG look, plain flat solid magenta (#FF00FF) background, no text, no shadow on the ground.",
+    "size_sentence": "Draw the whole character, head to foot, about {height} pixels tall on a {cell_width}x{cell_height} pixel art grid, with big chunky pixels; no fine detail smaller than one pixel.",
+    "scale_reference_sentence": "The attached image is only a scale reference for body height, head size and pixel size. Do not copy its face, hair, outfit, colors or equipment.",
+    "design_reference_sentence": "The attached image is an earlier candidate of this same character. Keep the same character and design as the reference image (face, hair, outfit, armour, colours and equipment); redraw it at the target pixel size with chunkier pixels.",
+    "art_reference_sentences": {
+      "humanoid": "The attached image is this character's card illustration. Redraw this exact character from it as an SD chibi pixel art battle sprite about 2.5 heads tall, in side view facing right: the same hair, face, outfit, equipment, colours and signature item. Do not copy the painted style, the normal proportions, the front view or the plain background.",
+      "creature": "The attached image is this creature's card illustration. Redraw this exact creature from it as a pixel art battle sprite, the whole creature about {height} pixels tall, in side view facing right: the same body shape, colours and signature feature. Do not copy the painted style, the front view or the plain background."
+    },
+    "design_file_sentence": "The attached image is a low-resolution pixel art sprite of this exact character, shown enlarged with each art pixel as a solid square block. Redraw it as a clean pixel art sprite on exactly the same pixel grid (same number of art pixels, same block size): keep the silhouette, pose and proportions, restore a clear face (eye with highlight, mouth) and a closed one-pixel dark outline. Do not add finer detail than one block.",
+    "banned_terms": ["maplestory", "final fantasy", "dragon quest", "octopath", "ragnarok", "pokemon", "zelda", "square enix", "nintendo", "nexon", "toriyama", "amano", "ghibli", "chrono trigger", "fire emblem"]
+  },
+  "art": {
+    "cap_per_unit": 9,
+    "batch_max": 3,
+    "size": [1024, 1536],
+    "bust_min_side": 512,
+    "bust_size": 512,
+    "placeholder_bust": {"x": 128, "y": 96, "width": 768, "height": 768},
+    "common_prompt": "Fantasy RPG character card illustration in a vertical 2:3 portrait format. One character or creature only, the whole body from head to feet inside the frame, with a small margin above the head and below the feet. A person is cute and slightly chibi-leaning, about 3.5 to 4 heads tall (a slightly large head, a compact body, short limbs, soft rounded shapes), but not super-deformed; a creature is a cute, rounded wild animal of the same world, not a mascot. Art style: clean anime game illustration with soft cel shading. Line: clean, confident, even line art, drawn slightly bold so it still reads on a small card; simple, readable anime faces with big, expressive eyes. Colour: a harmonious palette of a few main colours with soft, readable shading. Draw only the details the description names: no added patterns, trims, embroidery or ornaments. Plain, light, neutral background, flat and empty: no scenery, no props on the ground. No text, no letters, no frame, no border, no logo, no watermark, no signature.",
+    "composition_sentence": "Composition: standing at ease and facing the viewer in a slight three-quarter view, the face clearly visible and unobstructed in the upper part of the picture, hands and any held item kept inside the frame.",
+    "design_rule_sentence": "Design rule: the design must stay readable when shrunk to an 80-pixel-tall pixel art sprite: a clear, distinctive silhouette, 3 to 5 main colours, and the one signature item drawn large and exactly as described.",
+    "style_reference": null,
+    "style_reference_sentence": "One attached image is the art style reference. Match its line art, colouring, shading and proportions. It shows the style only: take what this character or creature looks like from the description (and from the pixel sprite, if one is attached), not from the figures in the reference, and draw one single figure.",
+    "dot_reference_sentence": "One attached image is this character's in-game pixel art sprite, enlarged with each art pixel as a square block on a magenta background. Use it as the design reference only: keep the same character (face, hair, outfit, colours and signature item), but paint a full illustration in the card art style and proportions described above; do not copy the pixel style, the 2.5-heads-tall sprite proportions or the magenta background."
+  },
+  "bg": {
+    "cap_per_background": 9,
+    "batch_max": 3,
+    "size": [1920, 1080],
+    "layouts": {
+      "battle": "a side-view 2D battle background for a fantasy RPG: {design}, a flat walkable ground band across the lower 55% of the image where small characters will stand in a shallow diagonal from upper left to lower middle, the middle of the ground kept simple and uncluttered.",
+      "backdrop": "a 2D background for the menu screens of a fantasy RPG: {design}, seen straight on at eye level, the middle kept calm and evenly lit because menu panels will cover most of it, no strong focal point."
+    },
+    "common_prompt": "Classic fantasy RPG mood. 16:9 landscape, 1920x1080 composition, no characters, no creatures, no text, no UI. Style: soft painterly illustration with muted, slightly desaturated colors and low contrast so foreground sprites stand out, simple large shapes, little fine texture."
+  },
+  "comparison_sheet": {"panel_height": 768, "long_side": 1600, "jpeg_quality": 85},
+  "rigs": {
+    "humanoid": {
+      "mask_symbols": {"h": "head", "t": "torso", "f": "front_arm", "b": "back_arm", "l": "legs",
+                       "W": "weapon", "S": "shield", "T": "staff", "B": "bow", "H": "helmet"},
+      "parts": {"legs": "root", "torso": "root", "head": "torso", "back_arm": "torso", "front_arm": "torso"},
+      "joints": {"neck": "head", "shoulder": "torso", "hand": "front_arm", "hip": "torso", "foot": "legs"},
+      "equipment": {"weapon": "hand", "shield": "hand", "staff": "hand", "bow": "hand", "helmet": "neck"},
+      "draw_order": ["back_arm", "legs", "torso", "head", "helmet", "weapon", "staff", "bow", "front_arm", "shield"],
+      "foot_part": "legs",
+      "height_excludes": ["weapon", "staff", "bow"],
+      "equipment_allowance": 24
+    },
+    "slime": {
+      "mask_symbols": {"b": "body", "l": "base"},
+      "parts": {"body": "root", "base": "root"},
+      "joints": {"foot": "base"},
+      "equipment": {},
+      "draw_order": ["base", "body"],
+      "foot_part": "base",
+      "height_excludes": []
+    },
+    "beast": {
+      "mask_symbols": {"h": "head", "t": "torso", "f": "front_legs", "b": "back_legs", "w": "tail"},
+      "parts": {"back_legs": "root", "front_legs": "root", "torso": "root", "head": "torso", "tail": "torso"},
+      "joints": {"foot": "back_legs"},
+      "equipment": {},
+      "draw_order": ["back_legs", "tail", "torso", "front_legs", "head"],
+      "foot_part": "back_legs",
+      "height_excludes": []
+    },
+    "flyer": {
+      "mask_symbols": {"t": "torso", "f": "front_wing", "b": "back_wing"},
+      "parts": {"torso": "root", "front_wing": "torso", "back_wing": "torso"},
+      "joints": {"foot": "torso"},
+      "equipment": {},
+      "draw_order": ["back_wing", "torso", "front_wing"],
+      "foot_part": "torso",
+      "height_excludes": [],
+      "air_height": 40,
+      "air_bob": 1
+    },
+    "silhouette": {
+      "mask_symbols": {"l": "legs", "b": "body"},
+      "parts": {"legs": "root", "body": "root"},
+      "joints": {"foot": "legs"},
+      "equipment": {},
+      "draw_order": ["legs", "body"],
+      "foot_part": "legs",
+      "height_excludes": []
+    }
+  },
+  "templates": {
+    "humanoid_idle": {
+      "action": "idle",
+      "rig": "humanoid",
+      "frame_ms": 200,
+      "frames": [
+        {},
+        {"offsets": {"torso": [0, 1]}},
+        {"offsets": {"torso": [0, 2]}},
+        {"offsets": {"torso": [0, 1]}}
+      ]
+    },
+    "humanoid_hit": {
+      "action": "hit",
+      "rig": "humanoid",
+      "frames": [
+        {"offsets": {"root": [-3, 0], "torso": [-1, 1]}},
+        {"offsets": {"root": [-1, 0]}}
+      ]
+    },
+    "humanoid_down": {
+      "action": "down",
+      "rig": "humanoid",
+      "frames": [{"replace": "down"}]
+    },
+    "guard_raise": {
+      "action": "guard",
+      "rig": "humanoid",
+      "frames": [
+        {"offsets": {"torso": [0, 1], "front_arm": [1, -6], "weapon": [-1, 6]}},
+        {"offsets": {"torso": [0, 1], "front_arm": [1, -12], "weapon": [-1, 12]}}
+      ]
+    },
+    "sword_slash": {
+      "action": "attack",
+      "rig": "humanoid",
+      "strike_frame": 2,
+      "frames": [
+        {"offsets": {"root": [-1, 0], "torso": [-1, 2]}},
+        {"offsets": {"root": [3, 0], "torso": [1, 1]}},
+        {"offsets": {"root": [6, 0], "torso": [2, 1]}},
+        {"offsets": {"root": [6, 0], "torso": [2, 1]}},
+        {"offsets": {"root": [3, 0], "torso": [1, 1]}},
+        {"offsets": {"root": [1, 0]}}
+      ]
+    },
+    "shield_bash": {
+      "action": "attack",
+      "rig": "humanoid",
+      "strike_frame": 2,
+      "frames": [
+        {"offsets": {"root": [-2, 0], "torso": [0, 2], "front_arm": [-1, 0], "weapon": [1, 0]}},
+        {"offsets": {"root": [3, 0], "torso": [1, 1], "front_arm": [3, 0], "weapon": [-3, 0]}},
+        {"offsets": {"root": [8, 0], "torso": [1, 0], "front_arm": [6, 0], "weapon": [-6, 0]}},
+        {"offsets": {"root": [8, 0], "torso": [1, 0], "front_arm": [6, 0], "weapon": [-6, 0]}},
+        {"offsets": {"root": [4, 0], "torso": [0, 1], "front_arm": [2, 0], "weapon": [-2, 0]}},
+        {"offsets": {"root": [1, 0]}}
+      ]
+    },
+    "staff_cast": {
+      "action": "attack",
+      "rig": "humanoid",
+      "strike_frame": 2,
+      "frames": [
+        {"offsets": {"root": [-1, 0], "torso": [0, 2], "front_arm": [-1, -1]}},
+        {"offsets": {"root": [1, 0], "torso": [0, 1], "front_arm": [2, -2]}},
+        {"offsets": {"root": [2, 0], "torso": [1, 0], "front_arm": [4, -5]}},
+        {"offsets": {"root": [2, 0], "torso": [1, 0], "front_arm": [4, -5]}},
+        {"offsets": {"root": [1, 0], "torso": [0, 1], "front_arm": [2, -2]}},
+        {"offsets": {}}
+      ]
+    },
+    "slime_idle": {
+      "action": "idle",
+      "rig": "slime",
+      "frame_ms": 200,
+      "frames": [
+        {},
+        {"offsets": {"body": [0, 1]}},
+        {"offsets": {"body": [0, 2]}},
+        {"offsets": {"body": [0, 1]}}
+      ]
+    },
+    "slime_attack": {
+      "action": "attack",
+      "rig": "slime",
+      "strike_frame": 2,
+      "frames": [
+        {"offsets": {"root": [-2, 0], "body": [0, 2]}},
+        {"offsets": {"root": [3, 0]}},
+        {"offsets": {"root": [8, 0]}},
+        {"offsets": {"root": [8, 0], "body": [0, 1]}},
+        {"offsets": {"root": [5, 0], "body": [0, 1]}},
+        {"offsets": {"root": [2, 0]}}
+      ]
+    },
+    "slime_hit": {
+      "action": "hit",
+      "rig": "slime",
+      "frames": [
+        {"offsets": {"root": [-2, 0], "body": [-1, 1]}},
+        {"offsets": {"root": [-1, 0]}}
+      ]
+    },
+    "slime_down": {
+      "action": "down",
+      "rig": "slime",
+      "frames": [{"replace": "down"}]
+    },
+    "bow_shot": {
+      "action": "attack",
+      "rig": "humanoid",
+      "strike_frame": 2,
+      "frames": [
+        {"offsets": {"torso": [0, 1], "back_arm": [-1, 0]}},
+        {"offsets": {"torso": [0, 1], "back_arm": [-4, 0], "front_arm": [1, 0]}},
+        {"offsets": {"root": [-1, 0], "back_arm": [-6, -1], "front_arm": [1, 0]}},
+        {"offsets": {"root": [-1, 0], "back_arm": [-6, -1], "front_arm": [1, 0]}},
+        {"offsets": {"torso": [0, 1], "back_arm": [-2, 0], "front_arm": [0, 2]}},
+        {"offsets": {}}
+      ]
+    },
+    "beast_idle": {
+      "action": "idle",
+      "rig": "beast",
+      "frame_ms": 200,
+      "frames": [
+        {},
+        {"offsets": {"torso": [0, 1]}},
+        {"offsets": {"torso": [0, 2]}},
+        {"offsets": {"torso": [0, 1]}}
+      ]
+    },
+    "beast_attack": {
+      "action": "attack",
+      "rig": "beast",
+      "strike_frame": 2,
+      "frames": [
+        {"offsets": {"root": [-2, 0], "torso": [0, 2]}},
+        {"offsets": {"root": [4, 0], "torso": [0, 1], "front_legs": [1, -1], "head": [1, 0]}},
+        {"offsets": {"root": [9, 0], "front_legs": [2, -2], "head": [2, 0]}},
+        {"offsets": {"root": [9, 0], "front_legs": [2, -2], "head": [2, 0]}},
+        {"offsets": {"root": [5, 0], "torso": [0, 1], "front_legs": [1, -1]}},
+        {"offsets": {"root": [1, 0]}}
+      ]
+    },
+    "beast_hit": {
+      "action": "hit",
+      "rig": "beast",
+      "frames": [
+        {"offsets": {"root": [-3, 0], "torso": [-1, 1]}},
+        {"offsets": {"root": [-1, 0]}}
+      ]
+    },
+    "beast_down": {
+      "action": "down",
+      "rig": "beast",
+      "frames": [{"replace": "down"}]
+    },
+    "flyer_idle": {
+      "action": "idle",
+      "rig": "flyer",
+      "frame_ms": 200,
+      "frames": [
+        {"swap": {"front_wing": "up", "back_wing": "up"}},
+        {"offsets": {"torso": [0, -1]}},
+        {"offsets": {"torso": [0, -1]}, "swap": {"front_wing": "down", "back_wing": "down"}},
+        {}
+      ]
+    },
+    "flyer_attack": {
+      "action": "attack",
+      "rig": "flyer",
+      "strike_frame": 2,
+      "frames": [
+        {"offsets": {"root": [-2, -1]}, "swap": {"front_wing": "up", "back_wing": "up"}},
+        {"offsets": {"root": [4, 0]}, "swap": {"front_wing": "up", "back_wing": "up"}},
+        {"offsets": {"root": [10, 1]}, "swap": {"front_wing": "up", "back_wing": "up"}},
+        {"offsets": {"root": [10, 1]}},
+        {"offsets": {"root": [5, 0]}, "swap": {"front_wing": "down", "back_wing": "down"}},
+        {"offsets": {"root": [1, 0]}}
+      ]
+    },
+    "flyer_hit": {
+      "action": "hit",
+      "rig": "flyer",
+      "frames": [
+        {"offsets": {"root": [-3, 0], "torso": [-1, 1]}, "swap": {"front_wing": "up", "back_wing": "up"}},
+        {"offsets": {"root": [-1, 0]}}
+      ]
+    },
+    "flyer_down": {
+      "action": "down",
+      "rig": "flyer",
+      "frames": [{"replace": "down"}]
+    },
+    "silhouette_idle": {
+      "action": "idle",
+      "rig": "silhouette",
+      "frame_ms": 200,
+      "frames": [
+        {},
+        {"offsets": {"body": [0, 1]}},
+        {"offsets": {"body": [0, 2]}},
+        {"offsets": {"body": [0, 1]}}
+      ]
+    },
+    "silhouette_down": {
+      "action": "down",
+      "rig": "silhouette",
+      "frames": [{"replace": "down"}]
+    }
+  }
+}
