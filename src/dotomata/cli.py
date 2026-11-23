@@ -414,6 +414,8 @@ def cmd_init(args):
     if not ignore.exists():
         write_new(ignore, f"{preview.name}/\n".encode(), False)
         print(f"wrote {ignore}")
+    elif f"{preview.name}/" not in ignore.read_text(encoding="utf-8").split():
+        print(f"note: {ignore} exists without '{preview.name}/'; add it to keep candidates out of git")
     return 0
 
 

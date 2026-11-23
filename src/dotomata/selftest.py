@@ -1217,7 +1217,7 @@ def test_golden(tmp: Path, real: dict) -> None:
 
 def test_init_and_config(tmp: Path, real: dict) -> None:
     """init writes the default config and keeps previews out of git; --config is read from
-    the current directory, ignores unknown sections, and paths in it stay relative to --root."""
+    the current directory and unknown sections in it are ignored."""
     root = tmp / "proj"
     root.mkdir()
     r = run_cli(root, "init")
